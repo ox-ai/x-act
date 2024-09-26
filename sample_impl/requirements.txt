@@ -1,0 +1,3 @@
+PyAutoGUI>=0.9.54
+PyGetWindow>=0.0.9
+ox-db @ git+https://github.com/ox-ai/ox-db.git#egg=ox-db

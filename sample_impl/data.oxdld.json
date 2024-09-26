@@ -1,0 +1,22 @@
+{
+    "1db2448a519e2a0703ffed2ba09271e8ad525d00a1b248e06040d78e60e43b3d": {
+        "data": "Runs a code block",
+        "description": {
+            "code_type": "code-input",
+            "code": "code-1",
+            "code_path": "path/to/code",
+            "input_required": true,
+            "input_map": {
+                "arg1": "value1",
+                "arg2": "value2"
+            },
+            "output_format": "json",
+            "description": "Runs a code block",
+            "metadata": {},
+            "keywords": [
+                "run",
+                "code"
+            ]
+        }
+    }
+}
