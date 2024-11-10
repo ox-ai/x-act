@@ -1,0 +1,45 @@
+[project]
+name = "x-act"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Lokeshwaran-M", email = "lokeshwaran.m23072003@gmail.com" },
+]
+requires-python = ">=3.10"
+dependencies = [
+
+    "faster_whisper>=1.0.3",
+    "numpy>=2.1.3",
+    "openai>=1.54.3",
+    "pyaudio>=0.2.11",
+    "rich>=13.9.4",
+    "soundfile>=0.12.1",
+    "playwright",
+    "markdownify",
+    "curl_cffi",
+    "pypdf",
+    "rapidocr_onnxruntime",
+    "mongomock",
+    "pymongo",
+    "fastapi>=0.115.4",
+    "fastapi-socketio>=0.0.10",
+    "orjson",
+    "pymupdf>=1.24.13",
+    "pymupdf4llm>=0.0.17",
+    "tiktoken>=0.8.0",
+    "googlesearch-python"
+
+]
+
+[project.scripts]
+x-act = "xact:main"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/xact"]
