@@ -15,13 +15,13 @@ def logger_config():
         datefmt="%b/%d %H:%M:%S",
         level=logging.INFO,
     )
-    handler = RichHandler(rich_tracebacks=True, console=console)
-    logger.addHandler(handler)
+    # handler = RichHandler(rich_tracebacks=True, console=console)
+    # logger.addHandler(handler)
     logger.propagate = False
     return logger
 
 
-def toggle_logging(enable: bool):
+def toggle_logging(enable: bool=True):
     if enable:
         logging.disable(logging.NOTSET)
     else:

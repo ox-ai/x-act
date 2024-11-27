@@ -1,15 +1,11 @@
 
 
-#from xact.socket_instance import emit_agent
+
 from xact.llm.openai_client import llm_client
-from xact.state import AgentState
 from xact.settings import config
 from xact.utils.log import logger
 
 
-
-
-agentState = AgentState()
 
 
 class LLM:
