@@ -30,7 +30,7 @@ class Config:
     XACT_LLM_EMBEDDING_MODEL = "nomic-embed-text"
     XACT_WHISPER_BASE_URL = None
     XACT_WHISPER_API_KEY = None
-    XACT_WHISPER_MODEL = "distil-medium.en"
+    XACT_WHISPER_MODEL = "small"
     XACT_MONGODB_SERVER_URI = "mongodb://localhost:27017"
     XACT_DB_Path = str(XACT_DB_Path)
     XACT_DOC_Path = str(XACT_DOC_Path)

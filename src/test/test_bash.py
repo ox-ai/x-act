@@ -7,7 +7,7 @@
 
 import asyncio
 
-from xact.act.action import bash
+from xact.act import bash
 
 # Create an instance of BashTool
 bash_tool = bash.BashTool()

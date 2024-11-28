@@ -5,7 +5,7 @@ from pypdf import PdfReader
 import pymupdf4llm 
 
 
-from xact.plugin.doc.document.base import Document, Doc
+from xact.plugin.doc.base import Document, Doc
 from xact.utils.log import logger
 
 def to_text(pdf_path):

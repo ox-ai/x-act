@@ -5,7 +5,7 @@ from typing import Literal, get_args
 
 
 from xact.tool.base import BaseTool, CLIResult, ToolError, ToolResult
-from xact.act.action.run import maybe_truncate, run
+from xact.act.run import maybe_truncate, run
 
 Command = Literal[
     "view",

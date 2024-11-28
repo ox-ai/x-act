@@ -14,7 +14,7 @@ class LLM:
         self.client = llm_client
         self.model = model
 
-    def generate(self, prompt: str,model:str=config.XACT_LLM_MODEL) -> str:
+    def generate(self, prompt: str,model:str=None) -> str:
         self.model = model or self.model
         chat_completion = self.client.chat.completions.create(
             messages=[

@@ -57,11 +57,14 @@ class Microphone:
         self.p.terminate()
         logger.info("Microphone closed")
 
+
+    
     def get_audio_data(self):
         data = b""
         while not self.queue.empty():
             data += self.queue.get()
-        return data if data else None
+        return data
+
 
     def save_audio_to_tempfile(self, audio_data):
         # Save the audio data to a temporary WAV file
@@ -74,11 +77,14 @@ class Microphone:
         return temp_file.name
 
 
-    def save_audio_to_tempfile_np(audio_data):
+    def save_audio_to_tempfile_np(self, audio_data):
+        if audio_data is None:
+            logger.error("No audio data to save.")
+            return None
+
         # Create a temporary file to store audio data
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
-            # Write audio data to the temp file
+            # Convert audio data to numpy array and write to temp file
             audio_array = np.frombuffer(audio_data, dtype=np.int16)
             sf.write(temp_file, audio_array, config.AUDIO_RATE)
             return temp_file.name
-    

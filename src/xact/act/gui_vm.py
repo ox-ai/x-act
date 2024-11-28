@@ -11,7 +11,7 @@ from uuid import uuid4
 
 
 from xact.tool.base import BaseTool, ToolError, ToolResult
-from xact.act.action.run import run
+from xact.act.run import run
 
 OUTPUT_DIR = "/tmp/outputs"
 

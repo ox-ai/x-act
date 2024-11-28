@@ -1,7 +1,7 @@
 import asyncio
 import os
-from xact.act.action.gui import ComputerTool, ToolError  # Assume saved as computer_tool_module.py
-from xact.act.action import gui
+from xact.act.gui import ComputerTool, ToolError  # Assume saved as computer_tool_module.py
+from xact.act import gui
 
 gui.Action
 async def main():
