@@ -10,7 +10,7 @@ from xact.speech_reg.whisper import transcribe
 print("f")
 from xact.speech_gen.echo import play_audio
 from xact.llm.openai_client import llm_client
-from xact.utils.log import logger
+from xact.log.config import logger
 
 print("f")
 mic = Microphone()

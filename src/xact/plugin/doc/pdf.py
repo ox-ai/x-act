@@ -2,11 +2,13 @@ from pathlib import Path
 from typing import List, Union, IO, Any
 
 from pypdf import PdfReader
-import pymupdf4llm 
+import pymupdf4llm
 
 
-from xact.plugin.doc.base import Document, Doc
-from xact.utils.log import logger
+from xact.plugin.doc.base import Doc
+from xact.data.data import DataX
+from xact.log.config import logger
+
 
 def to_text(pdf_path):
     # creating a pdf reader object
@@ -15,20 +17,21 @@ def to_text(pdf_path):
     # printing number of pages in pdf file
     text = ""
     for page in reader.pages:
-        text += "\n\n\n"+ page.extract_text()
+        text += "\n\n\n" + page.extract_text()
     return text
+
 
 def to_markdown(pdf_path):
     md_text = pymupdf4llm.to_markdown(pdf_path)
     return md_text
 
+
 class PDF(Doc):
     """Doc for PDF files"""
 
-    def read(self, pdf: Union[str, Path, IO[Any]]) -> List[Document]:
+    def read(self, pdf: Union[str, Path, IO[Any]]) -> List[DataX]:
         if not pdf:
             raise ValueError("No pdf provided")
-
 
         doc_name = ""
         try:
@@ -43,11 +46,12 @@ class PDF(Doc):
         doc_reader = PdfReader(pdf)
 
         documents = [
-            Document(
-                name=doc_name,
-                id=f"{doc_name}_{page_number}",
-                meta_data={"page": page_number},
+            DataX(
+                cid=doc_name,
+                source={"pdf": f"{doc_name}_{page_number}"},
+                metadata={"page": page_number},
                 content=page.extract_text(),
+                role="xact"
             )
             for page_number, page in enumerate(doc_reader.pages, start=1)
         ]
@@ -62,7 +66,7 @@ class PDF(Doc):
 class PDFUrl(Doc):
     """Doc for PDF files from URL"""
 
-    def read(self, url: str) -> List[Document]:
+    def read(self, url: str) -> List[DataX]:
         if not url:
             raise ValueError("No url provided")
 
@@ -85,10 +89,10 @@ class PDFUrl(Doc):
         doc_reader = PdfReader(BytesIO(response.content))
 
         documents = [
-            Document(
-                name=doc_name,
-                id=f"{doc_name}_{page_number}",
-                meta_data={"page": page_number},
+            DataX(
+                cid=doc_name,
+                source={"pdf": f"{doc_name}_{page_number}"},
+                metadata={"page": page_number},
                 content=page.extract_text(),
             )
             for page_number, page in enumerate(doc_reader.pages, start=1)
@@ -104,7 +108,7 @@ class PDFUrl(Doc):
 class PDFImage(Doc):
     """Doc for PDF files with text and images extraction"""
 
-    def read(self, pdf: Union[str, Path, IO[Any]]) -> List[Document]:
+    def read(self, pdf: Union[str, Path, IO[Any]]) -> List[DataX]:
         if not pdf:
             raise ValueError("No pdf provided")
 
@@ -148,11 +152,11 @@ class PDFImage(Doc):
             content = page_text + "\n" + images_text
 
             documents.append(
-                Document(
-                    name=doc_name,
-                    id=f"{doc_name}_{page_number}",
-                    meta_data={"page": page_number},
-                    content=content,
+                DataX(
+                    cid=doc_name,
+                    source={"pdf": f"{doc_name}_{page_number}"},
+                    metadata={"page": page_number},
+                    content=page.extract_text(),
                 )
             )
 
@@ -168,7 +172,7 @@ class PDFImage(Doc):
 class PDFUrlImage(Doc):
     """Doc for PDF files from URL with text and images extraction"""
 
-    def read(self, url: str) -> List[Document]:
+    def read(self, url: str) -> List[DataX]:
         if not url:
             raise ValueError("No url provided")
 
@@ -179,7 +183,9 @@ class PDFUrlImage(Doc):
             from pypdf import PdfReader as PdfReader
             import rapidocr_onnxruntime as rapidocr
         except ImportError:
-            raise ImportError("`httpx`, `pypdf` or `rapidocr_onnxruntime` not installed")
+            raise ImportError(
+                "`httpx`, `pypdf` or `rapidocr_onnxruntime` not installed"
+            )
 
         # Read the PDF from the URL
         logger.info(f"Reading: {url}")
@@ -213,11 +219,11 @@ class PDFUrlImage(Doc):
 
             # Append the document
             documents.append(
-                Document(
-                    name=doc_name,
-                    id=f"{doc_name}_{page_number}",
-                    meta_data={"page": page_number},
-                    content=content,
+                DataX(
+                    cid=doc_name,
+                    source={"pdf": f"{doc_name}_{page_number}"},
+                    metadata={"page": page_number},
+                    content=page.extract_text(),
                 )
             )
 

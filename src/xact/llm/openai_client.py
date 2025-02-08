@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-from xact.settings import config
+from xact.config.gen import config
 
 llm_client = OpenAI(
     base_url=config.XACT_LLM_BASE_URL,

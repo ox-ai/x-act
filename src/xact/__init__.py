@@ -1,5 +1,7 @@
-from xact.utils.log import logger
+from xact.log.config import log_manager
+
+log = log_manager.init(__name__)
 def main() -> None:
     print("xact init")
-    logger.info("xact init : system")
+    log.info("xact init : system")
 

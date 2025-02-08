@@ -1,7 +1,7 @@
 from faster_whisper import WhisperModel
 
-from xact.settings import config
-from xact.utils.log import logger
+from xact.config.gen import config
+from xact.log.config import logger
 
 
 class VoiceModel:

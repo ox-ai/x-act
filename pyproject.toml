@@ -8,7 +8,6 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-
     "faster_whisper>=1.0.3",
     "numpy>=2.1.3",
     "openai>=1.54.3",
@@ -30,8 +29,13 @@ dependencies = [
     "tiktoken>=0.8.0",
     "googlesearch-python",
     "pyttsx3",
-    "keyboard"
-
+    "keyboard",
+    "ollama>=0.4.5",
+    "imaplib2>=3.6",
+    "pendulum>=3.0.0",
+    "python-dotenv>=1.0.1",
+    "fuzzywuzzy>=0.18.0",
+    "python-levenshtein>=0.26.1",
 ]
 
 [project.scripts]

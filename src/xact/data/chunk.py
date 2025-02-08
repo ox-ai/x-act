@@ -1,17 +1,17 @@
 from typing import Optional, Dict, Any, List
 
-from pydantic import BaseModel, ConfigDict
+
 
 from xact.data.data import DataX
 
 
-class Doc(BaseModel):
-    chunk: bool = True
-    chunk_size: int = 3000
-    separators: List[str] = ["\n", "\n\n", "\r", "\r\n", "\n\r", "\t", " ", "  "]
+class Chunker():
 
-    def read(self, obj: Any) -> List[DataX]:
-        raise NotImplementedError
+    def __init__(self,chunk_size:int=3000):
+        self.chunk_size: int = chunk_size
+        self.separators: List[str] = ["\n", "\n\n", "\r", "\r\n", "\n\r", "\t", " ", "  "]
+
+
 
     def clean_text(self, text: str) -> str:
         """Clean the text by replacing multiple newlines with a single newline"""

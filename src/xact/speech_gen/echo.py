@@ -3,9 +3,10 @@ import asyncio
 import pyaudio
 
 
-from xact.settings import config
-from xact.utils.log import logger
+from xact.config.gen import config
+from xact.log.config import logger
 
+AUDIO_FORMAT = pyaudio.paInt16 #8
 
 async def play_audio(audio_data):
     p = pyaudio.PyAudio()

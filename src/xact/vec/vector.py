@@ -1,21 +1,21 @@
 from typing import List, Optional, Dict
 import numpy as np
 
-from xact.settings import config
-from xact.vec.embed import Embedder
+from xact.config.gen import config
+from xact.llm.embed import Embedder
 
 
 
 class VectorModel:
-    def __init__(self) -> None:
+    def __init__(self,embed_model:str=config.XACT_LLM_EMBEDDING_MODEL) -> None:
         """
         Initializes the Model class with the default sentence transformer model.
         """
-        self.md_name = config.XACT_LLM_EMBEDDING_MODEL
+        self.md_name = embed_model
         self.model = Embedder(model=self.md_name)
         
 
-    def generate(self, data:list):
+    def generate(self, data:list,model:str=config.XACT_LLM_EMBEDDING_MODEL):
         """
         Encodes the input data into embeddings using the loaded model.
 
@@ -25,20 +25,20 @@ class VectorModel:
         Returns:
             A list of embeddings corresponding to the input data.
         """
-        embeddings = self.model.generate(data)
+        embeddings = self.model.generate(data,model=model)
         embd_out = []
-        for embed in embeddings:
+        for embed in embeddings.data:
             embd_out.append(embed.embedding)
         return embd_out
 
 
-    def search(self, query: str,  data: Optional[List[str]] = [],embeds: Optional[List[List[int]]] = [], by: Optional[str] = config.SIM_FORMAT,include : Optional[List[str]]=[]) -> Dict[str, List]:
+    def search(self, query_embed: str|List[int],  data: Optional[List[str]] = [],data_embed: Optional[List[List[int]]] = [], by: Optional[str] = config.SIM_FORMAT,include : Optional[List[str]]=[]) -> Dict[str, List]:
         """
         Searches for the most similar documents to the query based on the specified similarity metric.
 
         Args:
             query (str): The query string to search for.
-            embeds (list, optional): Precomputed embeddings for the documents. Defaults to an empty list.
+            data_embed (list, optional): Precomputed embeddings for the documents. Defaults to an empty list.
             data (list, optional): Raw document data that needs to be encoded. Defaults to an empty list.
             by (Optional[str], optional): The similarity metric to use. Defaults to "dp".
                 - "dp" : Dot Product (default)
@@ -55,24 +55,31 @@ class VectorModel:
         if by not in config.SIM_FORMATS:
             raise ValueError(f"Invalid search method '{by}'. Must be one of {config.SIM_FORMATS}.")
 
-        # Generate embeddings for the query
-        query_embed = np.array(self.generate([query]))[0]
+        if isinstance(query_embed,str):
+            # Generate embeddings for the query
+            query_embed = np.array(self.generate([query_embed]))[0]
+        elif isinstance(query_embed,list):
+            # Generate embeddings for the query
+            query_embed = np.array(query_embed)
+        
 
-        # Generate embeddings for the documents if raw data is provided
-        if len(data) > 0:
-            embeds = np.array(self.generate(data))
-        elif len(embeds) > 0:
-            embeds = np.array(embeds)
+
+
+        if len(data_embed) > 0:
+            data_embed = np.array(data_embed)
+        elif len(data) > 0:
+            # Generate embeddings for the documents if raw data is provided
+            data_embed = np.array(self.generate(data))
         else:
-            return {"idx": [], "sim_score": [], "data": [], "embeds": []}
+            return {"idx": [], "sim_score": [], "data": [], "data_embed": []}
 
         # Vectorized similarity calculations
         if by == "dp":
-            sim = np.dot(embeds, query_embed.T)
+            sim = np.dot(data_embed, query_embed.T)
         elif by == "cs":
-            sim = np.dot(embeds, query_embed.T) / (np.linalg.norm(embeds, axis=1) * np.linalg.norm(query_embed))
+            sim = np.dot(data_embed, query_embed.T) / (np.linalg.norm(data_embed, axis=1) * np.linalg.norm(query_embed))
         elif by == "ed":
-            sim = np.linalg.norm(embeds - query_embed, axis=1)
+            sim = np.linalg.norm(data_embed - query_embed, axis=1)
 
         # Get top N indices and their similarity scores
         if by == "ed":
@@ -87,15 +94,15 @@ class VectorModel:
         data_sorted = []
         if len(data) > 0:
             data_sorted = [data[i] for i in idx]
-        embeds_sorted = []
-        if "embeds" in include:
-            embeds_sorted = [embeds[i].tolist() for i in idx]
+        data_embed_sorted = []
+        if "data_embed" in include:
+            data_embed_sorted = [data_embed[i].tolist() for i in idx]
 
         return {
             "idx": idx,
-            "sim_score": sim_score,
+            "score": sim_score,
             "data": data_sorted,
-            "embeds": embeds_sorted
+            "data_embed": data_embed_sorted
         }
 
     @staticmethod
