@@ -193,4 +193,4 @@ ignore.*
 
 
 *.env
-
+*.log
