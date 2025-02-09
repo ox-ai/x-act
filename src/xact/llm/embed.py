@@ -46,7 +46,9 @@ class Embedder:
 
         try:
             response = self.llm_client.embeddings.create(input=prompts, model=model,encoding_format=encoding_format)
+            log.info("llm embed generated")
             return response
         except Exception as e:
-            log.warning(e)
+            error_msg = "llm server connection failed : " + str(e)
+            log.warning(error_msg )
             raise e

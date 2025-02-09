@@ -1,5 +1,6 @@
 import os
 import json
+from pathlib import Path
 from typing import Dict, Any, Optional
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -110,8 +111,18 @@ class Config:
 
         # Handle JSON file
         if json_path:
+            json_path = Path(json_path)  # Ensure it's a Path object
+
+            # If the path is a directory, append "config.json"
+            if json_path.is_dir():
+                json_path = json_path / "config.json"
+
+            # Ensure parent directories exist
+            json_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # Load existing config if the file exists
             existing_json = {}
-            if os.path.exists(json_path):
+            if json_path.exists():
                 with open(json_path, "r") as file:
                     existing_json = json.load(file)
             # Add missing keys

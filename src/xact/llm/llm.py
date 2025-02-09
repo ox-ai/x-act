@@ -15,6 +15,14 @@ class LLM:
 
     def get_model(self):
         return self.model()
+    
+    def list(self,):
+        
+        models = []
+        for data in self.client.models.list():
+            models.append(data.id)
+
+        return models
 
     def generate(
         self,
@@ -22,6 +30,7 @@ class LLM:
         model: str = None,
         messages: list = None,
         temperature:int=0,
+        tools:list=None,
         response_format: Any = None,
         generate_format: Literal[
             "chat",
@@ -53,16 +62,17 @@ class LLM:
     
                 
         # del kwargs["generate_format"]
-
+        completion = None
         if generate_format == "chat":
 
-            chat_completion = self.client.chat.completions.create(
+            completion = self.client.chat.completions.create(
                 messages=messages,
                 model=model,
                 temperature=temperature,
+                tools=tools,
                 **kwargs,
             )
-            res = chat_completion.choices[0].message.content
+            res = completion.choices[0].message.content
             
 
         elif generate_format == "gen":
@@ -72,6 +82,7 @@ class LLM:
                 temperature=temperature,
                 **kwargs,
             )
+            res = completion.choices
 
         elif generate_format == "struct":
 
@@ -79,12 +90,19 @@ class LLM:
                 messages=messages,
                 model=model,
                 temperature=temperature,
+                tools=tools,
                 response_format=response_format,
                 **kwargs,       
             )
 
             res = completion.choices[0].message.parsed
 
+
         log.info("llm out generated")
 
-        return res
+        llm_out = {
+            "res":res,
+            "completion":completion,
+        }
+
+        return llm_out

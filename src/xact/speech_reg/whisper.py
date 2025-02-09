@@ -1,7 +1,9 @@
 from faster_whisper import WhisperModel
 
 from xact.config.gen import config
-from xact.log.config import logger
+from xact.log.config import log_manager
+
+log = log_manager.init(__name__)
 
 
 class VoiceModel:
@@ -15,7 +17,7 @@ class VoiceModel:
         for segment in segments:
             prompts.append(segment.text)
             transcribed = ("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
-            logger.info(transcribed)
+            log.info(transcribed)
 
         prompt = "".join(prompts)
         return prompt

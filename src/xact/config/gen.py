@@ -85,7 +85,7 @@ import atexit
 
 # Generate .env or JSON files with default values
 atexit.register(
-    lambda: config.generate(
+    lambda: gen_config.generate(
         dotenv_path=UPDATED_CONFIG_Path / ".env",
         json_path=UPDATED_CONFIG_Path / "config.json",
     )

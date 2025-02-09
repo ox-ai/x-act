@@ -6,7 +6,9 @@ import pyaudio
 import queue
 
 from xact.config.gen import config
-from xact.log.config import logger
+from xact.log.config import log_manager
+
+log = log_manager.init(__name__)
 
 
 
@@ -27,7 +29,7 @@ class Microphone:
         self.queue = queue.Queue()
         self.is_recording = False
         self.is_receiving = False
-        logger.info("Microphone init")
+        log.info("Microphone init")
 
     def callback(self, in_data, frame_count, time_info, status):
         if self.is_recording and not self.is_receiving:
@@ -36,26 +38,26 @@ class Microphone:
 
     def start_recording(self):
         self.is_recording = True
-        logger.info("Started recording")
+        log.info("Started recording")
 
     def stop_recording(self):
         self.is_recording = False
-        logger.info("Stopped recording")
+        log.info("Stopped recording")
 
     def start_receiving(self):
         self.is_receiving = True
         self.is_recording = False
-        logger.info("Started receiving")
+        log.info("Started receiving")
 
     def stop_receiving(self):
         self.is_receiving = False
-        logger.info("Stopped receiving")
+        log.info("Stopped receiving")
 
     def close(self):
         self.stream.stop_stream()
         self.stream.close()
         self.p.terminate()
-        logger.info("Microphone closed")
+        log.info("Microphone closed")
 
 
     
@@ -79,7 +81,7 @@ class Microphone:
 
     def save_audio_to_tempfile_np(self, audio_data):
         if audio_data is None:
-            logger.error("No audio data to save.")
+            log.error("No audio data to save.")
             return None
 
         # Create a temporary file to store audio data

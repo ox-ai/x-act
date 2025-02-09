@@ -1,8 +1,10 @@
 import time
 import keyboard  # For detecting key presses
 from xact.speech_reg.listen import Microphone
-from xact.speech_reg.whisper import transcribe
+from xact.speech_reg.whisper import VoiceModel
 
+
+vcmd= VoiceModel()
 
 custom_shortcut_key = "ctrl+alt+x"
 # Function to handle listening and transcription when a key is pressed
@@ -12,6 +14,7 @@ def listen_and_transcribe(mic):
         i=0
         while True:
             i=i+1
+
             print(f"\rProcessing {i}% complete", end='', flush=True)
             # Wait for the custom_shortcut_key key to start or stop recording
             if keyboard.is_pressed(custom_shortcut_key):  # Detect the custom_shortcut_key key press
@@ -37,7 +40,7 @@ def listen_and_transcribe(mic):
                     
                     if temp_file:
                         # Transcribe the audio using the transcribe function
-                        transcribed_text = transcribe(temp_file)
+                        transcribed_text = vcmd.transcribe(temp_file)
                         print(f"Transcription: {transcribed_text}")
                     else:
                         print("Failed to save audio data.")

@@ -53,7 +53,7 @@ class Tool:
 
 def tool(
     description: str = None, param_description: dict = None,func:callable=None 
-):
+)-> Tool:
     if func:
         if isinstance(func,Tool):
             return func
@@ -116,11 +116,11 @@ def gen_function_schema(func) -> dict:
         if param.default == inspect._empty
     ]
 
-    return {
+    fun_schema = {
         "type": "function",
         "function": {
             "name": func.__name__,
-            "description": func.__doc__.strip() or "",
+            "description": func.__doc__ or "",
             "parameters": {
                 "type": "object",
                 "properties": parameters,
@@ -128,3 +128,7 @@ def gen_function_schema(func) -> dict:
             },
         },
     }
+
+    fun_schema["function"]["description"] = fun_schema["function"]["description"].strip()
+
+    return fun_schema
