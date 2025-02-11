@@ -194,3 +194,4 @@ ignore.*
 
 *.env
 *.log
+*.lock
