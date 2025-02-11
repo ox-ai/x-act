@@ -5,6 +5,8 @@
 from fuzzywuzzy import fuzz
 from typing import List, Dict
 
+from xact.types.search import SearchMDResponse
+
 def string_search(promt: str, data_list: List[str]) -> Dict[str, List]:
     """
     Performs exact and fuzzy string search against a list of strings and ranks
@@ -42,4 +44,4 @@ def string_search(promt: str, data_list: List[str]) -> Dict[str, List]:
         res["data"].append(d)
         res["score"].append(sc / 100)
 
-    return res
+    return SearchMDResponse(**res)

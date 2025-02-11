@@ -13,4 +13,4 @@ def gen_datetime(local_utc:bool=config.TIME_UTF_LOCAL):
 
 def gen_uuid():
     """generate uuid"""
-    return uuid4()
+    return str(uuid4())

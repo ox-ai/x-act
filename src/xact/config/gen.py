@@ -29,7 +29,7 @@ XACT_CONFIG_PATH = XACT_BASE_Path / CONFIG_FILE
 default_config = {
     "XACT_LLM_BASE_URL": "http://localhost:11434/v1/",
     "XACT_LLM_API_KEY": "ollama",
-    "XACT_LLM_MODEL": "qwen2.5:1.5b ",
+    "XACT_LLM_MODEL": "qwen2.5:1.5b",
     "XACT_LLM_EMBEDDING_MODEL": "nomic-embed-text",
     "XACT_WHISPER_BASE_URL": None,
     "XACT_WHISPER_API_KEY": None,

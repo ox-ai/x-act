@@ -25,13 +25,11 @@ class Tool:
 
     def run(self, *args, **kwargs):
         name = self.fun_schema["function"]["name"]
-        log.info(f"executiong tool : {name}")
+        log.info(f"executing tool : {name}")
         return self.func(*args, **kwargs)
 
     def __call__(self, *args, **kwargs):
-        name = self.fun_schema["function"]["name"]
-        log.info(f"executiong tool : {name}")
-        return self.func(*args, **kwargs)
+        return self.run(*args, **kwargs)
 
     def get_schema(self, is_param_description: bool = True):
         fun_schema = self.fun_schema

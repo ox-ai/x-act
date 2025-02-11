@@ -1,10 +1,14 @@
-from typing import List, Optional, Dict
+from typing import Any, List, Optional, Dict, Union
 import numpy as np
+from pydantic import BaseModel
 
 from xact.config.gen import config
 from xact.llm.embed import Embedder
+from xact.types.search import SearchMDResponse
 
 
+
+    
 
 class VectorModel:
     def __init__(self,embed_model:str=config.XACT_LLM_EMBEDDING_MODEL) -> None:
@@ -17,7 +21,7 @@ class VectorModel:
 
     def generate(self, data:list,model:str=config.XACT_LLM_EMBEDDING_MODEL):
         """
-        Encodes the input data into embeddings using the loaded model.
+        Encodes the input data into embeddings using the loaded model.    
 
         Args:
             data: The data to be encoded, typically a list of strings.
@@ -32,7 +36,12 @@ class VectorModel:
         return embd_out
 
 
-    def search(self, query_embed: str|List[int],  data: Optional[List[str]] = [],data_embed: Optional[List[List[int]]] = [], by: Optional[str] = config.SIM_FORMAT,include : Optional[List[str]]=[]) -> Dict[str, List]:
+    def search(self, 
+               query_embed: str|List[int],  
+               data: Optional[List[str]] = [],
+               data_embed: Optional[List[List[int]]] = [], 
+               by: Optional[str] = config.SIM_FORMAT,
+               include : Optional[List[str]]=[]) -> SearchMDResponse:
         """
         Searches for the most similar documents to the query based on the specified similarity metric.
 
@@ -71,7 +80,7 @@ class VectorModel:
             # Generate embeddings for the documents if raw data is provided
             data_embed = np.array(self.generate(data))
         else:
-            return {"idx": [], "sim_score": [], "data": [], "data_embed": []}
+            return SearchMDResponse()
 
         # Vectorized similarity calculations
         if by == "dp":
@@ -98,13 +107,13 @@ class VectorModel:
         if "data_embed" in include:
             data_embed_sorted = [data_embed[i].tolist() for i in idx]
 
-        return {
-            "idx": idx,
-            "score": sim_score,
-            "data": data_sorted,
-            "data_embed": data_embed_sorted
-        }
-
+        return SearchMDResponse(
+            idx=idx,
+            score=sim_score,
+            data=data_sorted,
+            data_embed=data_embed_sorted
+        )
+           
     @staticmethod
     def sim( veca, vecb, sim_format: Optional[str] = config.SIM_FORMAT):
         """

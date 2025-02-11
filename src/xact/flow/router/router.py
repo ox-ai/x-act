@@ -1,6 +1,7 @@
 
 
 
+import copy
 import json
 import types
 from typing import List, Literal, Set, Union
@@ -8,9 +9,10 @@ from typing import List, Literal, Set, Union
 from xact.config.config import ConfigVar
 from xact.config.gen import config
 from xact.data.data import DataX
-from xact.llm.tool import Tool,gen_function_schema
-from xact.vec.vector import VectorModel
-from xact.search.search import string_search
+from xact.flow.tool.tool import Tool,gen_function_schema
+from xact.search.vector import VectorModel
+from xact.search.string import string_search
+from xact.types.search import SearchMDResponse
 
 
 
@@ -75,20 +77,29 @@ class RouteData:
         self.data_embd_str +=data_embd_str
         self.data_list +=up_data_list
 
+    def re_embed(self,):
+        self.data_embd =[]
+        self.data_embd_str =[]
+        old_data_list =  copy.copy(self.data_list)
+        self.data_list = []
+        self.embed(data_list=old_data_list)
+
+            
+
 
 class Router:
     @staticmethod
-    def route(prompt:str, route_data:RouteData,weights:set=(45,50,5)):
+    def route(prompt:str, route_data:RouteData,weights:set=(45,50,5))->SearchMDResponse:
         
         rout_vec = Router.route_vector(prompt=prompt,route_data=route_data)
         rout_str = Router.route_string(prompt=prompt,route_data=route_data)
 
         results = []
         for i,data in enumerate(route_data.data_list):
-            vidx = rout_vec["idx"].index(i)
-            sidx = rout_str["idx"].index(i)
+            vidx = rout_vec.idx.index(i)
+            sidx = rout_str.idx.index(i)
 
-            score = weights[0]*rout_vec["score"][vidx] + weights[1]*0 + weights[2]*rout_str["score"][sidx]
+            score = weights[0]*rout_vec.score[vidx] + weights[1]*0 + weights[2]*rout_str.score[sidx]
             results.append((i,data,score))
             
 
@@ -96,21 +107,21 @@ class Router:
         results.sort(key=lambda x: x[2], reverse=True)
 
         # Single loop to construct return dictionary
-        res = {"idx": [], "data": [], "score": []}
+        res = SearchMDResponse()
         for i, d, sc in results:
-            res["idx"].append(i)
-            res["data"].append(d)
-            res["score"].append(sc / 100)
+            res.idx.append(i)
+            res.data.append(d)
+            res.score.append(sc / 100)
 
         return res
     
     @staticmethod
-    def route_vector(prompt:str, route_data:RouteData):
+    def route_vector(prompt:str, route_data:RouteData)->SearchMDResponse:
         vecmd = VectorModel(embed_model=route_data.embed_model)
         return vecmd.search(query_embed=prompt,data=route_data.data_list,data_embed=route_data.data_embd)
     
     @staticmethod
-    def route_string(prompt:str, route_data:RouteData):
+    def route_string(prompt:str, route_data:RouteData)->SearchMDResponse:
         return string_search(promt=prompt,data_list=route_data.data_embd_str)
         
     @staticmethod
