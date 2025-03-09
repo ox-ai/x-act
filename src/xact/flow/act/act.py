@@ -9,7 +9,7 @@ from typing import Dict, List
 from xact.flow.tool.tool import tool, Tool
 from xact.utils.gen import gen_uuid
 from xact.log.config import log_manager
-from xact.flow.router.router import RouteData, Router
+from xact.router.router import RouteData, Router
 from xact.llm.llm import LLM
 from xact.llm.openai_client import llm_client as base_llm_client, OpenAI
 

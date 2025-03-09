@@ -22,6 +22,7 @@ class Tool:
         self.description = description
         self.param_description = param_description
         self.fun_schema = gen_function_schema(func=func)
+        self.name = self.fun_schema["function"]["name"]
 
     def run(self, *args, **kwargs):
         name = self.fun_schema["function"]["name"]
